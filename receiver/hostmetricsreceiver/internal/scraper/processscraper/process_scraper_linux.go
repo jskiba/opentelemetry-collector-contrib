@@ -18,8 +18,10 @@
 package processscraper // import "github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/processscraper"
 
 import (
+	"errors"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"go.opentelemetry.io/collector/pdata/pcommon"
+	"os"
 
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/processscraper/internal/metadata"
 )
@@ -30,14 +32,19 @@ func (s *scraper) recordCPUTimeMetric(now pcommon.Timestamp, cpuTime *cpu.TimesS
 	s.mb.RecordProcessCPUTimeDataPoint(now, cpuTime.Iowait, metadata.AttributeStateWait)
 }
 
-func getProcessExecutable(proc processHandle) (*executableMetadata, error) {
+func getProcessExecutable(proc processHandle, safeProcessScraping bool) (*executableMetadata, error) {
 	name, err := proc.Name()
 	if err != nil {
 		return nil, err
 	}
 
+	safeScraping := true
+
 	exe, err := proc.Exe()
-	if err != nil {
+	if safeProcessScraping {
+		safeScraping = !(errors.Is(err, os.ErrPermission) || errors.Is(err, os.ErrExist))
+	}
+	if err != nil && safeScraping {
 		return nil, err
 	}
 

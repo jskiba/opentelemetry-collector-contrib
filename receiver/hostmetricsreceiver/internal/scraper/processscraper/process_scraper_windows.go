@@ -32,7 +32,7 @@ func (s *scraper) recordCPUTimeMetric(now pcommon.Timestamp, cpuTime *cpu.TimesS
 	s.mb.RecordProcessCPUTimeDataPoint(now, cpuTime.System, metadata.AttributeStateSystem)
 }
 
-func getProcessExecutable(proc processHandle) (*executableMetadata, error) {
+func getProcessExecutable(proc processHandle, safeProcessScraping bool) (*executableMetadata, error) {
 	exe, err := proc.Exe()
 	if err != nil {
 		return nil, err

@@ -33,6 +33,8 @@ type Config struct {
 	// collector does not have permission for.
 	// See https://github.com/open-telemetry/opentelemetry-collector/issues/3004 for more information.
 	MuteProcessNameError bool `mapstructure:"mute_process_name_error,omitempty"`
+	// SafeProcessScraping is a flag that will
+	SafeProcessScraping bool `mapstructure:"safe_process_scraping,omitempty"`
 }
 
 type MatchConfig struct {
