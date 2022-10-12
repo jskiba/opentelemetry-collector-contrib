@@ -33,8 +33,14 @@ type Config struct {
 	// collector does not have permission for.
 	// See https://github.com/open-telemetry/opentelemetry-collector/issues/3004 for more information.
 	MuteProcessNameError bool `mapstructure:"mute_process_name_error,omitempty"`
-	// SafeProcessScraping is a flag that will
-	SafeProcessScraping bool `mapstructure:"safe_process_scraping,omitempty"`
+
+	// MuteProcessIOError is a flag that will mute the error encountered when trying to read IO metrics of a process
+	// the collector does not have permission for.
+	MuteProcessIOError bool `mapstructure:"mute_process_io_error,omitempty"`
+
+	// ResilientProcessScraping is a flag that will let the collector continue reading a process even when
+	// the collector does not have permission to read it's executable path (Linux)
+	ResilientProcessScraping bool `mapstructure:"resilient_process_scraping,omitempty"`
 }
 
 type MatchConfig struct {
